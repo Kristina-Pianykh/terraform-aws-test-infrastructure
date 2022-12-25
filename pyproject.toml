@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "terraform-test-infra"
+version = "0.1.0"
+description = ""
+authors = ["Kristina Pianykh <kristinavrnrus@gmail.com>"]
+readme = "README.md"
+packages = [{include = "terraform_test_infra"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

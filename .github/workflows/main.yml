@@ -1,0 +1,36 @@
+name: Poetry installation
+on:
+  pull_request:
+jobs:
+  install_dependencies:
+    name: Install py dependencies
+    runs-on: ubuntu-latest
+    steps:
+      
+    - name: Upgrade pip
+      run: |
+        pip install --upgrade pip
+
+    - name: Install Poetry
+      uses: snok/install-poetry@v1
+
+    - name: Echo poetry version
+      run: |
+        echo $(poetry --version)
+
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Checkout Repo
+      uses: actions/checkout@v3
+
+    - name: Export and install dependencies
+      run: |
+        poetry export -f requirements.txt --output requirements.txt
+        pip install -r requirements.txt
+        echo $(pip list)
+
+    - name: Run test python script
+      run: |
+        python test.py
