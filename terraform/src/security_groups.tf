@@ -11,10 +11,11 @@ resource "aws_security_group" "launch_instance" {
   }
 
   ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = var.allowed_cidr_blocks
+    description     = "Allow the EC2 to accept inbound traffic from ALB only"
+    from_port       = 80
+    to_port         = 80
+    protocol        = "tcp"
+    security_groups = [aws_security_group.my-demo-lb.id]
   }
 
   egress {

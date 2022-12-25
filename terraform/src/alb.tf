@@ -13,7 +13,7 @@ resource "aws_lb_target_group" "test-target-group" {
   vpc_id   = var.vpc_id
 
   health_check {
-    path                = "/health"
+    path                = "/"
     port                = var.health_check_port
     healthy_threshold   = 2
     unhealthy_threshold = 5
