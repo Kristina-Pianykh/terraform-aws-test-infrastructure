@@ -12,6 +12,12 @@ variable "ami_id" {
   nullable    = false
 }
 
+variable "instance_type" {
+  description = "Instance Type for the EC2 Instance"
+  type        = string
+  default     = "t2.micro"
+}
+
 variable "region" {
   type    = string
   default = "eu-west-1"
