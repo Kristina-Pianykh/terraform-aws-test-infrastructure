@@ -22,12 +22,13 @@ resource "aws_lb_target_group" "test-target-group" {
   }
 }
 
-resource "aws_lb_target_group_attachment" "test-3-instances" {
-  target_group_arn = aws_lb_target_group.test-target-group.arn
-  count            = var.instance_count
-  target_id        = aws_instance.app_server[count.index].id
-  port             = 80
-}
+# "Attachment of the target group with 3 EC2s to the ALB. Required if the the ASG is disabled"
+# resource "aws_lb_target_group_attachment" "test-3-instances" {
+#   target_group_arn = aws_lb_target_group.test-target-group.arn
+#   count            = var.instance_count
+#   target_id        = aws_instance.app_server[count.index].id
+#   port             = 80
+# }
 
 resource "aws_lb_listener" "demo-http-listener" {
   load_balancer_arn = aws_lb.DemoALB.arn
