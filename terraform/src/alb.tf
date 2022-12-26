@@ -39,3 +39,16 @@ resource "aws_lb_listener" "demo-http-listener" {
     target_group_arn = aws_lb_target_group.test-target-group.arn
   }
 }
+
+# resource "aws_lb_listener" "demo-https-listener" {
+#   load_balancer_arn = aws_lb.DemoALB.arn
+#   port              = "443"
+#   protocol          = "HTTPS"
+#   ssl_policy        = "ELBSecurityPolicy-2016-08"
+#   # certificate_arn   = "arn:aws:iam::187416307283:server-certificate/test_cert_rab3wuqwgja25ct3n4jdj2tzu4"
+
+#   default_action {
+#     type             = "forward"
+#     target_group_arn = aws_lb_target_group.test-target-group.arn
+#   }
+# }
