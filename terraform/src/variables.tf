@@ -29,6 +29,20 @@ variable "instance_count" {
   default = 3
 }
 
+variable "instance_userdata" {
+  type    = string
+  default = <<EOF
+#!/bin/bash
+# Use this for your user data (script from top to bottom)
+# install httpd (Linux 2 version)
+yum update -y
+yum install -y httpd
+systemctl start httpd
+systemctl enable httpd
+echo "<h1>Hello World from $(hostname -f)</h1>" > /var/www/html/index.html
+EOF
+}
+
 variable "vpc_id" {
   type    = string
   default = "vpc-08baf641b4aa1f3aa"
