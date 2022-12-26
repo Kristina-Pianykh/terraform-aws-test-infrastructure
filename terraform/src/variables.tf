@@ -12,6 +12,12 @@ variable "ami_id" {
   nullable    = false
 }
 
+variable "instance_type" {
+  description = "Instance Type for the EC2 Instance"
+  type        = string
+  default     = "t2.micro"
+}
+
 variable "region" {
   type    = string
   default = "eu-west-1"
@@ -21,6 +27,20 @@ variable "region" {
 variable "instance_count" {
   type    = number
   default = 3
+}
+
+variable "instance_userdata" {
+  type    = string
+  default = <<EOF
+#!/bin/bash
+# Use this for your user data (script from top to bottom)
+# install httpd (Linux 2 version)
+yum update -y
+yum install -y httpd
+systemctl start httpd
+systemctl enable httpd
+echo "<h1>Hello World from $(hostname -f)</h1>" > /var/www/html/index.html
+EOF
 }
 
 variable "vpc_id" {
@@ -58,4 +78,9 @@ variable "allowed_cidr_blocks" {
   type    = list(string)
   default = ["0.0.0.0/0"]
 
+}
+
+variable "availability_zones" {
+  type    = list(string)
+  default = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
 }
