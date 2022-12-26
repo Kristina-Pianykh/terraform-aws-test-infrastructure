@@ -79,3 +79,8 @@ variable "allowed_cidr_blocks" {
   default = ["0.0.0.0/0"]
 
 }
+
+variable "availability_zones" {
+  type    = list(string)
+  default = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
+}
