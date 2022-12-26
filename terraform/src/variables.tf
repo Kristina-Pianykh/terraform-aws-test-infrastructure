@@ -32,17 +32,17 @@ variable "subnets" {
   default = {
     private-subnet-az-a = {
       cidr_block              = "172.31.32.0/20"
-      map_public_ip_on_launch = false
+      map_public_ip_on_launch = true
       availability_zone       = "eu-west-1a"
     }
     private-subnet-az-b = {
       cidr_block              = "172.31.0.0/20"
-      map_public_ip_on_launch = false
+      map_public_ip_on_launch = true
       availability_zone       = "eu-west-1b"
     }
     private-subnet-az-c = {
       cidr_block              = "172.31.16.0/20"
-      map_public_ip_on_launch = false
+      map_public_ip_on_launch = true
       availability_zone       = "eu-west-1c"
     }
   }

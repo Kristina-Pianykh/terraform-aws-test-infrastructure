@@ -12,9 +12,10 @@ EOF
 }
 
 resource "aws_instance" "app_server" {
-  ami                    = var.ami_id
-  instance_type          = "t2.micro"
-  count                  = var.instance_count
-  user_data_base64       = base64encode(local.instance-userdata)
-  vpc_security_group_ids = [aws_security_group.launch_instance.id]
+  ami                         = var.ami_id
+  instance_type               = "t2.micro"
+  count                       = var.instance_count
+  user_data_base64            = base64encode(local.instance-userdata)
+  vpc_security_group_ids      = [aws_security_group.launch_instance.id]
+  associate_public_ip_address = true
 }
