@@ -38,17 +38,6 @@ jobs:
           commit_message: "chore: automatic terraform formatting"
           branch: main
 
-      - name: Setup TFLint
-        uses: terraform-linters/setup-tflint@v2
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          tflint_version: v0.38.1
-
-      - name: Show TFlint Version
-        run: tflint --version
-
-      - name: Init TFLint
-        run: tflint --init terraform/src/
-
-      - name: Run TFLint
-        run: tflint terraform/src/ --format compact
+      - name: Run TFlint in Docker Container
+        run: |
+          docker run --rm -v $(pwd)/terraform/src:/data -t ghcr.io/terraform-linters/tflint
