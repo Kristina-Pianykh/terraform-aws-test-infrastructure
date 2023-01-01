@@ -32,7 +32,8 @@ jobs:
         run: terraform fmt -recursive
         continue-on-error: true
 
-      - uses: stefanzweifel/git-auto-commit-action@v4
+      - name: Detect Modified Files and Commit
+        uses: stefanzweifel/git-auto-commit-action@v4
         with:
           add_options: "**/*.tf"
           commit_message: "chore: automatic terraform formatting"
