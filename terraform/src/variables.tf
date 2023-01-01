@@ -44,7 +44,6 @@ EOF
 }
 
 variable "vpc_id" {
-  type    = string
   default = "vpc-08baf641b4aa1f3aa"
 }
 
