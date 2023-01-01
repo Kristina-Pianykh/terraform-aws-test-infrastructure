@@ -18,8 +18,8 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v3
 
-      - uses: actions/cache@v3
-        name: Cache plugin dir
+      - name: Set Cache Plugin Dir
+        uses: actions/cache@v3
         with:
           path: ~/.tflint.d/plugins
           key: tflint-${{ hashFiles('.tflint.hcl') }}
