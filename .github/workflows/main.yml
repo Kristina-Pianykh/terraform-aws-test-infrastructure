@@ -1,7 +1,8 @@
 name: Format and Lint Terraform
 on:
-  pull_request:
   push:
+  pull_request:
+    branches: [main]
 
 jobs:
   tf_fmt_lint:
