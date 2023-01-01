@@ -33,6 +33,7 @@ jobs:
         continue-on-error: true
 
       - name: Detect Modified Files and Commit
+        if: ${{ !github.event.act }} # skip during local actions testing
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           add_options: "**/*.tf"
