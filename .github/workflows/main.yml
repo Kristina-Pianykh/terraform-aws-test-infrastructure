@@ -2,8 +2,7 @@ name: Format and Lint Terraform
 on:
   pull_request:
   push:
-    branches:
-      - main
+
 jobs:
   tf_fmt_lint:
     name: Format and Lint Terraform
