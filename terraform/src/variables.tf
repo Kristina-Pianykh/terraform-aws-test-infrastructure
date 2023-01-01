@@ -68,7 +68,6 @@ variable "subnets" {
 }
 
 variable "health_check_port" {
-  type        = number
   default     = 80
   description = "Health Check Port for the Application Load Balancer"
 }
