@@ -1,21 +1,8 @@
-variable "instance_name" {
-  description = "Value of the Name tag for the EC2 instance"
-  type        = string
-  default     = "ExampleAppServerInstance"
-}
-
-
 variable "ami_id" {
   description = "Amazon Machine Image for the EC2 Instance"
   type        = string
   default     = "ami-0fe0b2cf0e1f25c8a"
   nullable    = false
-}
-
-variable "instance_type" {
-  description = "Instance Type for the EC2 Instance"
-  type        = string
-  default     = "t2.micro"
 }
 
 variable "region" {
@@ -24,10 +11,16 @@ variable "region" {
 
 }
 
-variable "instance_count" {
-  type    = number
-  default = 3
-}
+# variable "instance_count" {
+#   type    = number
+#   default = 3
+# }
+
+# variable "instance_type" {
+#   description = "Instance Type for the EC2 Instance"
+#   type        = string
+#   default     = "t2.micro"
+# }
 
 variable "instance_userdata" {
   type    = string
@@ -44,10 +37,16 @@ EOF
 }
 
 variable "vpc_id" {
+  type    = string
   default = "vpc-08baf641b4aa1f3aa"
 }
 
 variable "subnets" {
+  type = map(object({
+    cidr_block              = string,
+    map_public_ip_on_launch = bool,
+    availability_zone       = string
+  }))
   default = {
     private-subnet-az-a = {
       cidr_block              = "172.31.32.0/20"
@@ -68,6 +67,7 @@ variable "subnets" {
 }
 
 variable "health_check_port" {
+  type        = number
   default     = 80
   description = "Health Check Port for the Application Load Balancer"
 }
@@ -76,9 +76,4 @@ variable "allowed_cidr_blocks" {
   type    = list(string)
   default = ["0.0.0.0/0"]
 
-}
-
-variable "availability_zones" {
-  type    = list(string)
-  default = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
 }
