@@ -6,7 +6,7 @@ on:
       - main
 jobs:
   tf_fmt:
-    name: Deploy Site
+    name: Format and Lint Terraform
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -18,10 +18,16 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v2
 
+      - uses: actions/cache@v2
+        name: Cache plugin dir
+        with:
+          path: ~/.tflint.d/plugins
+          key: tflint-${{ hashFiles('.tflint.hcl') }}
+
       - name: Terraform Setup
         uses: hashicorp/setup-terraform@v2
 
-      - name: Terraform fmt
+      - name: Format Terraform Files
         id: fmt
         run: terraform fmt -recursive
         continue-on-error: true
@@ -31,3 +37,18 @@ jobs:
           add_options: "**/*.tf"
           commit_message: "chore: automatic terraform formatting"
           branch: main
+
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tflint_version: v0.38.1
+
+      - name: Show TFlint Version
+        run: tflint --version
+
+      - name: Init TFLint
+        run: tflint --init terraform/src/
+
+      - name: Run TFLint
+        run: tflint terraform/src/ --format compact
