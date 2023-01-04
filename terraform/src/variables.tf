@@ -6,7 +6,7 @@ variable "ami_id" {
 }
 
 variable "region" {
-  type    = string
+  # type    = string
   default = "eu-west-1"
 
 }
@@ -72,8 +72,25 @@ variable "health_check_port" {
   description = "Health Check Port for the Application Load Balancer"
 }
 
-variable "allowed_cidr_blocks" {
-  type    = list(string)
-  default = ["0.0.0.0/0"]
+variable "db_username" {
+  description = "Database administrator username"
+  type        = string
+  sensitive   = true
+}
 
+variable "db_password" {
+  description = "Database administrator password"
+  type        = string
+  sensitive   = true
+}
+
+variable "mysql_db_port" {
+  type    = number
+  default = 3306
+}
+
+variable "my_ip_address" {
+  description = "Public IP of the connecting host"
+  type        = string
+  sensitive   = true
 }

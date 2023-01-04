@@ -7,7 +7,7 @@ resource "aws_security_group" "launch_instance" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = var.allowed_cidr_blocks
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
@@ -15,7 +15,7 @@ resource "aws_security_group" "launch_instance" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    # cidr_blocks = var.allowed_cidr_blocks
+    # cidr_blocks = ["0.0.0.0/0"]
     security_groups = [aws_security_group.my-demo-lb.id]
   }
 
@@ -23,7 +23,7 @@ resource "aws_security_group" "launch_instance" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = var.allowed_cidr_blocks
+    cidr_blocks = ["0.0.0.0/0"]
   }
 }
 
@@ -36,13 +36,37 @@ resource "aws_security_group" "my-demo-lb" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = var.allowed_cidr_blocks
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = var.allowed_cidr_blocks
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "mysql_db_security_group" {
+  name        = "MySQLSecurityGroup"
+  description = "Default security group for MySQL database instance allowing access from a range of private IP addresses."
+  vpc_id      = var.vpc_id
+
+  ingress {
+    from_port = var.mysql_db_port
+    to_port   = var.mysql_db_port
+    protocol  = "tcp"
+    cidr_blocks = [
+      var.my_ip_address
+    ]
+  }
+
+  egress {
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
+    cidr_blocks = [
+      "0.0.0.0/0"
+    ]
   }
 }

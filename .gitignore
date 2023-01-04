@@ -1,4 +1,4 @@
 **/*.envrc
 **/*tfstate
 **/.terraform
-**/*.secrets
+**/*secret*
