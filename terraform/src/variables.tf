@@ -6,7 +6,7 @@ variable "ami_id" {
 }
 
 variable "region" {
-  # type    = string
+  type    = string
   default = "eu-west-1"
 
 }
