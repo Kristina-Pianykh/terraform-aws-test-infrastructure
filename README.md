@@ -1,3 +1,7 @@
+[![Format and Lint Terraform](https://github.com/Kristina-Pianykh/terraform-aws-test-infrastructure/actions/workflows/main.yml/badge.svg)](https://github.com/Kristina-Pianykh/terraform-aws-test-infrastructure/actions/workflows/main.yml)
+
+[![tfsec](https://github.com/Kristina-Pianykh/terraform-aws-test-infrastructure/actions/workflows/tfsec.yml/badge.svg)](https://github.com/Kristina-Pianykh/terraform-aws-test-infrastructure/actions/workflows/tfsec.yml)
+
 ### To test the Autoscaling
 
 - connect to an EC2 instance via AWS Console
