@@ -3,11 +3,11 @@ name: Deploy Terraform
 on:
     push:
         paths-ignore:
-            - '**/*md'
+            - '**md'
     pull_request:
         branches: [main]
         paths-ignore:
-            - '**/*md'
+            - '**md'
 
 env:
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
