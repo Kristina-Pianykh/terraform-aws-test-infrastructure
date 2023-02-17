@@ -1,6 +1,6 @@
 [![Deploy Terraform](https://github.com/Kristina-Pianykh/terraform-aws-test-infrastructure/actions/workflows/tf-deploy.yml/badge.svg)](https://github.com/Kristina-Pianykh/terraform-aws-test-infrastructure/actions/workflows/tf-deploy.yml)
 
-[![Destroy Terraform](https://github.com/Kristina-Pianykh/terraform-aws-test-infrastructure/actions/workflows/tf-destroy.yml/badge.svg)](https://github.com/Kristina-Pianykh/terraform-aws-test-infrastructure/actions/workflows/tf-destroy.yml)
+[![Destroy Terraform](https://github.com/Kristina-Pianykh/terraform-aws-test-infrastructure/actions/workflows/tf-destroy.yml/badge.svg?branch=main)](https://github.com/Kristina-Pianykh/terraform-aws-test-infrastructure/actions/workflows/tf-destroy.yml)
 
 [![tfsec](https://github.com/Kristina-Pianykh/terraform-aws-test-infrastructure/actions/workflows/tfsec.yml/badge.svg)](https://github.com/Kristina-Pianykh/terraform-aws-test-infrastructure/actions/workflows/tfsec.yml)
 
