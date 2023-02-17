@@ -8,7 +8,7 @@ resource "aws_db_instance" "demo_db" {
   password                = var.db_password
   skip_final_snapshot     = true
   backup_retention_period = 7
-  # kms_key_id 
+  # kms_key_id
   port                   = var.mysql_db_port
   publicly_accessible    = true
   storage_type           = "gp2"
