@@ -22,4 +22,7 @@ jobs:
             - name: Terraform Destroy
               run: |
                   cd terraform/src &&
-                  terraform destroy
+                  terraform destroy \
+                  -var 'db_username=${{ secrets.DB_USERNAME }}' \
+                  -var 'db_password=${{ secrets.DB_PASSWORD }}' \
+                  -var 'my_ip_address=${{ secrets.IP_ADDRESS }}'
