@@ -83,18 +83,3 @@ jobs:
               run: |
                   cd terraform/src &&
                   terraform apply terraform.plan
-
-    terraform_destroy:
-        name: Run Terraform Destroy
-        runs-on: ubuntu-latest
-        needs: [terraform_apply]
-        steps:
-            - name: Terraform Destroy
-              run: |
-                  cd terraform/src &&
-                  terraform destroy
-
-# terraform init -backend-config=region=eu-west-1                                                    \
-#     -backend-config=bucket=audi-sfa-dev-terraform-backend              \
-#     -backend-config=dynamodb_table=audi-sfa-dev-terraform-state-lock        \
-#     -backend-config=key=analytics-vpc-eu-west-1/infrastructure/infrastructure.tfstate
