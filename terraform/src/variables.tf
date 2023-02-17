@@ -91,6 +91,6 @@ variable "mysql_db_port" {
 
 variable "my_ip_address" {
   description = "Public IP of the connecting host"
-  type        = string
+  type        = list(string)
   sensitive   = true
 }

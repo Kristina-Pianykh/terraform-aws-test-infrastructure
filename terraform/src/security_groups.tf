@@ -53,12 +53,10 @@ resource "aws_security_group" "mysql_db_security_group" {
   vpc_id      = var.vpc_id
 
   ingress {
-    from_port = var.mysql_db_port
-    to_port   = var.mysql_db_port
-    protocol  = "tcp"
-    cidr_blocks = [
-      var.my_ip_address
-    ]
+    from_port   = var.mysql_db_port
+    to_port     = var.mysql_db_port
+    protocol    = "tcp"
+    cidr_blocks = var.my_ip_address
   }
 
   egress {
