@@ -14,12 +14,12 @@ jobs:
         name: Run Terraform Destroy
         runs-on: ubuntu-latest
         steps:
+            - name: Checkout Repo
+              uses: actions/checkout@v3
+            - name: Initialize Terraform
+              run: |
+                  cd terraform/src && terraform init
             - name: Terraform Destroy
               run: |
                   cd terraform/src &&
                   terraform destroy
-
-# terraform init -backend-config=region=eu-west-1                                                    \
-#     -backend-config=bucket=audi-sfa-dev-terraform-backend              \
-#     -backend-config=dynamodb_table=audi-sfa-dev-terraform-state-lock        \
-#     -backend-config=key=analytics-vpc-eu-west-1/infrastructure/infrastructure.tfstate
