@@ -73,10 +73,10 @@ jobs:
             - name: Terraform Plan
               run: |
                   cd terraform/src &&
-                  terraform plan /
-                  -var db_username=${{ secrets.DB_USERNAME }} /
-                  -var db_password=${{ secrets.DB_PASSWORD }} /
-                  -var my_ip_address=${{ secrets.IP_ADDRESS }} /
+                  terraform plan \
+                  -var 'db_username=${{ secrets.DB_USERNAME }}' \
+                  -var 'db_password=${{ secrets.DB_PASSWORD }}' \
+                  -var 'my_ip_address=${{ secrets.IP_ADDRESS }}' \
                   -out=terraform.plan
 
             - name: Terraform Apply
