@@ -14,4 +14,10 @@ resource "aws_db_instance" "demo_db" {
   storage_type           = "gp2"
   vpc_security_group_ids = [aws_security_group.mysql_db_security_group.id]
   deletion_protection    = false
+  db_subnet_group_name   = aws_db_subnet_group.default.name
+}
+
+resource "aws_db_subnet_group" "default" {
+  name       = "main"
+  subnet_ids = [for subnet in aws_subnet.subnet : subnet.id]
 }
