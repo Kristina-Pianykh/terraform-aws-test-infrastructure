@@ -30,7 +30,7 @@ jobs:
                   pip install -r requirements.txt
             - name: Run pre-commit
               run: |
-                  pre-commit run --all-files SKIP=terraform_tflint
+                  SKIP=terraform_tflint pre-commit run --all-files
 
     tf_fmt_lint:
         name: Format and Lint Terraform
