@@ -89,8 +89,8 @@ variable "mysql_db_port" {
   default = 3306
 }
 
-variable "my_ip_address" {
-  description = "Public IP of the connecting host"
-  type        = list(string)
+variable "my_ip_addresses" {
+  description = "A comma separated string of public IP of the connecting host"
+  type        = string
   sensitive   = true
 }

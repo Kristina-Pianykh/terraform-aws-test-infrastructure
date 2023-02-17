@@ -76,7 +76,7 @@ jobs:
                   terraform plan \
                   -var 'db_username=${{ secrets.DB_USERNAME }}' \
                   -var 'db_password=${{ secrets.DB_PASSWORD }}' \
-                  -var 'my_ip_address=${{ secrets.IP_ADDRESS }}' \
+                  -var 'my_ip_addresses=${{ secrets.IP_ADDRESSES }}' \
                   -out=terraform.plan
 
             - name: Terraform Apply

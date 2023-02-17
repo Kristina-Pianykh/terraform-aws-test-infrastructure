@@ -56,7 +56,7 @@ resource "aws_security_group" "mysql_db_security_group" {
     from_port   = var.mysql_db_port
     to_port     = var.mysql_db_port
     protocol    = "tcp"
-    cidr_blocks = var.my_ip_address
+    cidr_blocks = split(",", var.my_ip_addresses)
   }
 
   egress {
