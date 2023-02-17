@@ -72,6 +72,7 @@ jobs:
 
             - name: Terraform Plan
               run: |
+                  pwd && 
                   terraform plan /
                   -var db_username=${{ secrets.DB_USERNAME }} /
                   -var db_password=${{ secrets.DB_PASSWORD }} /
