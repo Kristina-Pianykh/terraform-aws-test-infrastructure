@@ -21,7 +21,7 @@ jobs:
                   cd terraform/src && terraform init
             - name: Terraform Destroy
               run: |
-                  cd terraform/src &&
+                  cd terraform/src
                   terraform destroy -auto-approve \
                   -var 'db_username=${{ secrets.DB_USERNAME }}' \
                   -var 'db_password=${{ secrets.DB_PASSWORD }}' \
