@@ -1,0 +1,25 @@
+---
+name: Destroy Terraform
+on:
+    workflow_dispatch:
+
+env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    AWS_DEFAULT_REGION: eu-west-1
+    AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+jobs:
+    terraform_destroy:
+        name: Run Terraform Destroy
+        runs-on: ubuntu-latest
+        steps:
+            - name: Terraform Destroy
+              run: |
+                  cd terraform/src &&
+                  terraform destroy
+
+# terraform init -backend-config=region=eu-west-1                                                    \
+#     -backend-config=bucket=audi-sfa-dev-terraform-backend              \
+#     -backend-config=dynamodb_table=audi-sfa-dev-terraform-state-lock        \
+#     -backend-config=key=analytics-vpc-eu-west-1/infrastructure/infrastructure.tfstate
