@@ -82,7 +82,7 @@ jobs:
             - name: Terraform Apply
               run: |
                   cd terraform/src &&
-                  terraform apply terraform.plan -auto-approve
+                  terraform apply terraform.plan
 
     terraform_destroy:
         name: Run Terraform Destroy
