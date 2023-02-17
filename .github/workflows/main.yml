@@ -56,3 +56,39 @@ jobs:
             - name: Run TFlint in Docker Container
               run: |
                   docker run --rm -v $(pwd)/terraform/src:/data -t ghcr.io/terraform-linters/tflint
+
+    terraform_init:
+        name: Run Terraform Init
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Repo
+              uses: actions/checkout@v3
+
+            - name: Initialize Terraform
+              run: |
+                  cd terraform/src && terraform init
+
+            - name: Terraform Plan
+              run: |
+                  terraform plan /
+                  -var db_username=${{ secrets.DB_USERNAME }} /
+                  -var db_password=${{ secrets.DB_PASSWORD }} /
+                  -var my_ip_address=${{ secrets.IP_ADDRESS }} /
+                  -out=terraform.plan
+
+            - name: Terraform Apply
+              run: |
+                  terraform apply terraform.plan -auto-approve
+
+    terraform_destroy:
+        name: Run Terraform Init
+        runs-on: ubuntu-latest
+        steps:
+            - name: Terraform Destroy
+              run: |
+                  terraform destroy
+
+# terraform init -backend-config=region=eu-west-1                                                    \
+#     -backend-config=bucket=audi-sfa-dev-terraform-backend              \
+#     -backend-config=dynamodb_table=audi-sfa-dev-terraform-state-lock        \
+#     -backend-config=key=analytics-vpc-eu-west-1/infrastructure/infrastructure.tfstate
