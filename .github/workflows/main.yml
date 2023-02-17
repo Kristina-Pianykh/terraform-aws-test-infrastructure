@@ -1,5 +1,5 @@
 ---
-name: Format and Lint Terraform
+name: Deploy Terraform
 on:
     push:
     pull_request:
