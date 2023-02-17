@@ -4,7 +4,13 @@
 
 [![tfsec](https://github.com/Kristina-Pianykh/terraform-aws-test-infrastructure/actions/workflows/tfsec.yml/badge.svg)](https://github.com/Kristina-Pianykh/terraform-aws-test-infrastructure/actions/workflows/tfsec.yml)
 
-### To test the Autoscaling
+# Toy AWS Infrastructure with terraform
+
+It's deployed via Github Workflows (on push) or locally with the `terraform_deploy.sh` script.
+
+To destroy the infrastructure, trigger the workflow `Terraform Destroy` in the GitHub UI.
+
+## To test the Autoscaling
 
 - connect to an EC2 instance via AWS Console
 - Install the stress testers with:
@@ -20,7 +26,7 @@ sudo yum install stress -y
 stress -c <cpu_cores>
 ```
 
-### To run the main GitHub Workflow locally:
+## To run the main GitHub Workflow locally:
 
 - install [`Docker`](https://docs.docker.com/get-docker/)
 - install [`act`](https://github.com/nektos/act)
