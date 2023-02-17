@@ -72,7 +72,7 @@ jobs:
 
             - name: Terraform Plan
               run: |
-                  pwd &&
+                  cd terraform/src &&
                   terraform plan /
                   -var db_username=${{ secrets.DB_USERNAME }} /
                   -var db_password=${{ secrets.DB_PASSWORD }} /
@@ -81,6 +81,7 @@ jobs:
 
             - name: Terraform Apply
               run: |
+                  cd terraform/src &&
                   terraform apply terraform.plan -auto-approve
 
     terraform_destroy:
@@ -90,6 +91,7 @@ jobs:
         steps:
             - name: Terraform Destroy
               run: |
+                  cd terraform/src &&
                   terraform destroy
 
 # terraform init -backend-config=region=eu-west-1                                                    \
