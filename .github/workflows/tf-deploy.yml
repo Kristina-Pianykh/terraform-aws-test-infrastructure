@@ -1,6 +1,7 @@
 ---
 name: Deploy Terraform
 on:
+    workflow_dispatch:
     push:
         paths-ignore:
             - '**md'
