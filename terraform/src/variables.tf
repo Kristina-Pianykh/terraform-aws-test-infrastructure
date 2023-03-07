@@ -95,6 +95,12 @@ variable "my_ip_addresses" {
   sensitive   = true
 }
 
+variable "test_versioned_bucket_name" {
+  description = "Name of the test versioned bucket"
+  type        = string
+  default     = "test-versioned-bucket"
+}
+
 variable "admin_group_name" {
   description = "Name of the admin group"
   type        = string
