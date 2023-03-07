@@ -20,7 +20,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "expire_object_immediately" {
 
   rule {
     id     = "expire_object_immediately"
-    status = Enabled
+    status = "Enabled"
 
     expiration {
       expired_object_delete_marker = true
