@@ -98,7 +98,7 @@ variable "my_ip_addresses" {
 variable "test_versioned_bucket_name" {
   description = "Name of the test versioned bucket"
   type        = string
-  default     = "test-versioned-bucket"
+  default     = "simple-test-versioned-bucket"
 }
 
 variable "admin_group_name" {
