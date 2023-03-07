@@ -94,3 +94,9 @@ variable "my_ip_addresses" {
   type        = string
   sensitive   = true
 }
+
+variable "admin_group_name" {
+  description = "Name of the admin group"
+  type        = string
+  default     = "admin"
+}
