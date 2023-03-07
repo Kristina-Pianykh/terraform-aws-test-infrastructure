@@ -19,8 +19,8 @@ resource "aws_s3_bucket_lifecycle_configuration" "expire_object_immediately" {
   bucket = aws_s3_bucket.test_versioned_bucket.id
 
   rule {
-    id      = "expire_object_immediately"
-    enabled = true
+    id     = "expire_object_immediately"
+    status = Enabled
 
     expiration {
       expired_object_delete_marker = true
