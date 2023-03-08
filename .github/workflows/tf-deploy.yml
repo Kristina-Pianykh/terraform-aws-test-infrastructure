@@ -68,7 +68,7 @@ jobs:
                   docker run --rm -v $(pwd)/terraform/src:/data -t ghcr.io/terraform-linters/tflint
 
     s3_sync:
-        name: Run Terraform Apply
+        name: Sync Data in S3
         runs-on: ubuntu-latest
         needs: [tf_fmt_lint]
         if: ${{ github.actor != 'dependabot[bot]' }}
