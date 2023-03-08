@@ -82,10 +82,10 @@ jobs:
               run: |
                   python -m pip install --upgrade pip setuptools wheel
                   pip install awscli
-            - name: Sync data in S3
+            - name: Sync Data in S3
               run: |
                   echo "S3_BUCKET_NAME=${S3_BUCKET_NAME}" >> $GITHUB_ENV
-                  echo "s3://${{ env.S3_BUCKET_NAME }"
+                  echo "s3://${{ env.S3_BUCKET_NAME }}"
                   aws s3 sync test-bucket-data 's3://${{ env.S3_BUCKET_NAME }}' --delete
 
     terraform_apply:
