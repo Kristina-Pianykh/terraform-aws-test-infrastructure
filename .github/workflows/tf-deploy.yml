@@ -70,7 +70,6 @@ jobs:
     s3_sync:
         name: Sync Data in S3
         runs-on: ubuntu-latest
-        needs: [tf_fmt_lint]
         if: ${{ github.actor != 'dependabot[bot]' }}
         steps:
             - name: Checkout Repo
@@ -85,12 +84,14 @@ jobs:
                   pip install awscli
             - name: Sync data in S3
               run: |
-                  aws s3 sync test-bucket-data 's3://$S3_BUCKET_NAME' --delete
+                  echo "S3_BUCKET_NAME=${S3_BUCKET_NAME}" >> $GITHUB_ENV
+                  echo "s3://${{ env.S3_BUCKET_NAME }"
+                  aws s3 sync test-bucket-data 's3://${{ env.S3_BUCKET_NAME }}' --delete
 
     terraform_apply:
         name: Run Terraform Apply
         runs-on: ubuntu-latest
-        needs: [s3_sync]
+        needs: [tf_fmt_lint]
         if: ${{ github.actor != 'dependabot[bot]' }}
         steps:
             - name: Checkout Repo
