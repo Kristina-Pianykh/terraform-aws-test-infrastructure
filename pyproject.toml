@@ -9,6 +9,7 @@ packages = [{include = "terraform_test_infra"}]
 [tool.poetry.dependencies]
 python = "^3.10"
 pre-commit = "^3.0.4"
+s3cmd = "^2.3.0"
 
 
 [build-system]
