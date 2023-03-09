@@ -8,12 +8,36 @@ env:
     AWS_DEFAULT_REGION: eu-west-1
     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    S3_BUCKET_NAME: simple-test-versioned-bucket
 
 jobs:
     terraform_destroy:
         name: Run Terraform Destroy
         runs-on: ubuntu-latest
         steps:
+            - name: Set up Python
+              uses: actions/setup-python@v4
+              with:
+                  python-version: '3.10'
+            - name: Install AWS CLI
+              run: |
+                  python -m pip install --upgrade pip setuptools wheel
+                  pip install awscli
+            - name: Delete ALL objects in S3
+              run: |
+                  echo "S3_BUCKET_NAME=${S3_BUCKET_NAME}" >> $GITHUB_ENV
+                  echo "bucket name: {{ env.S3_BUCKET_NAME }}"
+                  aws s3api delete-objects \
+                    --bucket ${{ env.S3_BUCKET_NAME }} \
+                    --delete "$(aws s3api list-object-versions \
+                    --bucket ${{ env.S3_BUCKET_NAME }} \
+                    --output=json \
+                    --query='{Objects: Versions[].{Key:Key,VersionId:VersionId}} || {Objects: DeleteMarkers[].Key[]}')"
+
+                    aws s3api delete-objects --bucket ${{ env.S3_BUCKET_NAME }} \
+                    --delete "$(aws s3api list-object-versions \
+                    --bucket ${{ env.S3_BUCKET_NAME }} --output=json \
+                    --query='{Objects: DeleteMarkers[].{Key:Key,VersionId:VersionId}}')"
             - name: Checkout Repo
               uses: actions/checkout@v3
             - name: Initialize Terraform
