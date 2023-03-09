@@ -24,6 +24,7 @@ jobs:
                   python -m pip install --upgrade pip setuptools wheel
                   pip install awscli
             - name: Delete ALL objects in S3
+              continue-on-error: true
               run: |
                   echo "S3_BUCKET_NAME=${S3_BUCKET_NAME}" >> $GITHUB_ENV
                   echo "bucket name: {{ env.S3_BUCKET_NAME }}"
