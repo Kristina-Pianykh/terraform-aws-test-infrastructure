@@ -58,6 +58,13 @@ resource "aws_security_group" "mysql_db_security_group" {
     cidr_blocks = split(",", var.my_ip_addresses)
   }
 
+  ingress {
+    from_port   = var.mysql_db_port
+    to_port     = var.mysql_db_port
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   egress {
     from_port = 0
     to_port   = 0

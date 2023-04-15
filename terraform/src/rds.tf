@@ -21,3 +21,10 @@ resource "aws_db_subnet_group" "default" {
   name       = "main"
   subnet_ids = [for subnet in aws_subnet.subnet : subnet.id]
 }
+
+resource "null_resource" "db_setup" {
+
+  provisioner "local-exec" {
+    command = "mysql -h ${aws_db_instance.demo_db.endpoint} -u ${var.db_username} -P ${var.mysql_db_port} -p ${var.db_password} ${aws_db_instance.demo_db.endpoint.db_name} -e 'CREATE TABLE hero_attribute (hero_id int, attribute_id int, attribute_value int);'"
+  }
+}
