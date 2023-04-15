@@ -25,15 +25,24 @@ resource "aws_db_subnet_group" "default" {
 resource "null_resource" "db_setup" {
 
   provisioner "local-exec" {
+    interpreter = [
+      "/bin/bash", "-c"
+    ]
     command = """
-    mysql -h ${split(":", aws_db_instance.demo_db.endpoint)[0]} -u ${nonsensitive(var.db_username)} -P ${var.mysql_db_port} --password=${nonsensitive(var.db_password)} -e 'USE mydb; CREATE TABLE hero_attribute (hero_id int, attribute_id int, attribute_value int);'
-     split -C 1024m -d test_data.csv data.part_
-     mysqlimport  --local \
-    --compress \
-    --user=admin \
-    --password=0CAD2FB5D9 \
-    --host=my-sql-demo-db.cbppkiwouxgk.eu-west-1.rds.amazonaws.com \
-    --fields-terminated-by=',' mydb hero_attribute.part_*
+    db_endpoint=${split(":", aws_db_instance.demo_db.endpoint)[0]}
+    mysql \
+      -h $${db_endpoint} \
+      -u ${var.db_username} \
+      -P ${var.mysql_db_port} \
+      --password=${var.db_password} '
+      -e 'USE mydb; CREATE TABLE ${var.db_table_name} (hero_id int, attribute_id int, attribute_value int);'
+    split -C 1024m -d ${var.local_data_file_name} data.part_
+    mysqlimport  --local \
+      --compress \
+      --user=${var.db_username} \
+      --password=${var.db_password} \
+      --host=$${db_endpoint} \
+      --fields-terminated-by=',' mydb ${var.db_table_name}.part_*
     """
   }
 }
