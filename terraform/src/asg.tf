@@ -1,9 +1,15 @@
+resource "aws_iam_instance_profile" "ec2_sqs_access" {
+  name = "sqs_full_access"
+  role = aws_iam_role.ec2_sqs_access_role.name
+}
+
 resource "aws_launch_configuration" "demo-config" {
-  name             = "EC2-launch-asg"
-  image_id         = var.ami_id
-  instance_type    = "t2.micro"
-  user_data_base64 = base64encode(var.instance_userdata)
-  security_groups  = [aws_security_group.launch_instance.id]
+  name                 = "EC2-launch-asg"
+  image_id             = var.ami_id
+  instance_type        = "t2.micro"
+  user_data_base64     = base64encode(var.instance_userdata)
+  security_groups      = [aws_security_group.launch_instance.id]
+  iam_instance_profile = aws_iam_instance_profile.ec2_sqs_access.name
 
   lifecycle {
     create_before_destroy = true
