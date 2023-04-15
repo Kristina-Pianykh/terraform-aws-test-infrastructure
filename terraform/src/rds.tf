@@ -25,6 +25,15 @@ resource "aws_db_subnet_group" "default" {
 resource "null_resource" "db_setup" {
 
   provisioner "local-exec" {
-    command = "mysql -h ${split(":", aws_db_instance.demo_db.endpoint)[0]} -u ${var.db_username} -P ${var.mysql_db_port} -p ${var.db_password} ${aws_db_instance.demo_db.db_name} -e 'CREATE TABLE hero_attribute (hero_id int, attribute_id int, attribute_value int);'"
+    command = """
+    mysql -h ${split(":", aws_db_instance.demo_db.endpoint)[0]} -u ${nonsensitive(var.db_username)} -P ${var.mysql_db_port} --password=${nonsensitive(var.db_password)} -e 'USE mydb; CREATE TABLE hero_attribute (hero_id int, attribute_id int, attribute_value int);'
+     split -C 1024m -d test_data.csv data.part_
+     mysqlimport  --local \
+    --compress \
+    --user=admin \
+    --password=0CAD2FB5D9 \
+    --host=my-sql-demo-db.cbppkiwouxgk.eu-west-1.rds.amazonaws.com \
+    --fields-terminated-by=',' mydb hero_attribute.part_*
+    """
   }
 }
