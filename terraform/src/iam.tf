@@ -26,7 +26,7 @@ data "aws_iam_policy_document" "ec2_sqs_access_role" {
 
 resource "aws_iam_role" "ec2_sqs_access_role" {
   description        = "Role for EC2 with full access to SQS"
-  name               = "ec2_sqs_access_role"
+  name               = "EC2SQSAccessRole"
   assume_role_policy = data.aws_iam_policy_document.ec2_sqs_access_role.json
 }
 
