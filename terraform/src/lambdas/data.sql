@@ -1,1 +1,0 @@
-CREATE TABLE hero_attribute (hero_id int, attribute_id int, attribute_value int);

@@ -109,7 +109,7 @@ variable "admin_group_name" {
 
 variable "local_data_file_name" {
   type    = string
-  default = "local_data_file_name"
+  default = "hero_attribute.csv"
 }
 
 variable "db_table_name" {

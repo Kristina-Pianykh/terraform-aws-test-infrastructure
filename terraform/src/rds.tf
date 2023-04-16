@@ -26,23 +26,8 @@ resource "null_resource" "db_setup" {
 
   provisioner "local-exec" {
     interpreter = [
-      "/bin/bash", "-c"
+      "/bin/bash"
     ]
-    command = """
-    db_endpoint=${split(":", aws_db_instance.demo_db.endpoint)[0]}
-    mysql \
-      -h $${db_endpoint} \
-      -u ${var.db_username} \
-      -P ${var.mysql_db_port} \
-      --password=${var.db_password} '
-      -e 'USE mydb; CREATE TABLE ${var.db_table_name} (hero_id int, attribute_id int, attribute_value int);'
-    split -C 1024m -d ${var.local_data_file_name} data.part_
-    mysqlimport  --local \
-      --compress \
-      --user=${var.db_username} \
-      --password=${var.db_password} \
-      --host=$${db_endpoint} \
-      --fields-terminated-by=',' mydb ${var.db_table_name}.part_*
-    """
+    command = "./${path.module}/import_data.sh -u ${var.db_username} -p ${var.db_password} -h ${split(":", aws_db_instance.demo_db.endpoint)[0]} -d ${aws_db_instance.demo_db.db_name} -f ${path.module}/${var.local_data_file_name} -t ${var.db_table_name} -P ${var.mysql_db_port}"
   }
 }
