@@ -106,3 +106,13 @@ variable "admin_group_name" {
   type        = string
   default     = "admin"
 }
+
+variable "local_data_file_name" {
+  type    = string
+  default = "local_data_file_name"
+}
+
+variable "db_table_name" {
+  type    = string
+  default = "hero_attribute"
+}
