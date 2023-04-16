@@ -28,6 +28,6 @@ resource "null_resource" "db_setup" {
     interpreter = [
       "/bin/bash"
     ]
-    command = "./${path.module}/import_data.sh -u ${var.db_username} -p ${var.db_password} -h ${split(":", aws_db_instance.demo_db.endpoint)[0]} -d ${aws_db_instance.demo_db.db_name} -f ${path.module}/${var.local_data_file_name} -t ${var.db_table_name} -P ${var.mysql_db_port}"
+    command = "./import_data.sh -u ${var.db_username} -p ${var.db_password} -h ${split(":", aws_db_instance.demo_db.endpoint)[0]} -d ${aws_db_instance.demo_db.db_name} -f ${var.local_data_file_name} -t ${var.db_table_name} -P ${var.mysql_db_port}"
   }
 }
