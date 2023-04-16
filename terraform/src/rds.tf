@@ -22,12 +22,20 @@ resource "aws_db_subnet_group" "default" {
   subnet_ids = [for subnet in aws_subnet.subnet : subnet.id]
 }
 
+resource "aws_db_parameter_group" "platform" {
+  name   = "${aws_db_instance.demo_db.db_name}-parameter-group"
+  family = "mysql8.0"
+
+  parameter {
+    name  = "log_bin_trust_function_creators"
+    value = "true"
+    # apply_method = "pending-reboot"
+  }
+}
+
 resource "null_resource" "db_setup" {
 
   provisioner "local-exec" {
-    interpreter = [
-      "/bin/bash"
-    ]
-    command = "./import_data.sh -u ${var.db_username} -p ${var.db_password} -h ${split(":", aws_db_instance.demo_db.endpoint)[0]} -d ${aws_db_instance.demo_db.db_name} -f ${var.local_data_file_name} -t ${var.db_table_name} -P ${var.mysql_db_port}"
+    command = "./import_data.sh -u ${var.db_username} -p ${var.db_password} -h ${split(":", aws_db_instance.demo_db.endpoint)[0]} -d ${aws_db_instance.demo_db.db_name} -f ${file(var.local_data_file_name)} -t ${var.db_table_name} -P ${var.mysql_db_port}"
   }
 }
