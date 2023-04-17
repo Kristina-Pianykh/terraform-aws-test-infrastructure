@@ -15,6 +15,7 @@ resource "aws_db_instance" "demo_db" {
   vpc_security_group_ids = [aws_security_group.mysql_db_security_group.id]
   deletion_protection    = false
   db_subnet_group_name   = aws_db_subnet_group.default.name
+  parameter_group_name   = aws_db_parameter_group.custom.name
 }
 
 resource "aws_db_subnet_group" "default" {
@@ -22,7 +23,7 @@ resource "aws_db_subnet_group" "default" {
   subnet_ids = [for subnet in aws_subnet.subnet : subnet.id]
 }
 
-resource "aws_db_parameter_group" "platform" {
+resource "aws_db_parameter_group" "custom" {
   name   = "${aws_db_instance.demo_db.db_name}-parameter-group"
   family = "mysql8.0"
 
