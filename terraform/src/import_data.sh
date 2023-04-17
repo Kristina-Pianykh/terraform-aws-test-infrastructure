@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # parse arguments
 while getopts ":u:p:d:P:h:t:f:" opt; do
