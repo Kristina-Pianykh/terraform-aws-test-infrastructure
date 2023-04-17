@@ -43,7 +43,35 @@ done
 
 
 # create table
-sql_command="USE mydb; CREATE TABLE IF NOT EXISTS $table (hero_id int, attribute_id int, attribute_value int);"
+# sql_command="$(cat << EOF
+#   GRANT SESSION_VARIABLES_ADMIN ON *.* TO $user';
+#   USE $db_name;
+#   CREATE TABLE IF NOT EXISTS $table (
+#     hero_id int,
+#     attribute_id int,
+#     attribute_value int
+#     );
+#   LOAD DATA INFILE $file
+#   INTO TABLE $table
+#   FIELDS TERMINATED BY ','
+#   ENCLOSED BY '"'
+#   LINES TERMINATED BY '\n'
+#   IGNORE 1 ROWS;
+# EOF
+# )"
+
+# sql_command="GRANT SESSION_VARIABLES_ADMIN ON *.* TO $user;"
+
+sql_command="$(cat << EOF
+  GRANT SESSION_VARIABLES_ADMIN ON *.* TO $user;
+  USE $db_name;
+  CREATE TABLE IF NOT EXISTS $table (
+    hero_id int,
+    attribute_id int,
+    attribute_value int
+    );
+EOF
+)"
 
 mysql \
     -h $host \
@@ -52,13 +80,21 @@ mysql \
     --password=$password \
     -e "$sql_command"
 
-# split large file into smaller files
+# # split large file into smaller files
 split -C 1024m -d $file $table.part_
 
-# import splitted files into database
+# # import splitted files into database
 mysqlimport --local \
     --compress \
     --user=$user \
     --password=$password \
     --host=$host \
     --fields-terminated-by=',' $db_name $table.part_*
+
+
+# mysqlimport --local \
+#     --compress \
+#     --user="admin" \
+#     --password="0CAD2FB5D9" \
+#     --host="my-sql-demo-db.cbppkiwouxgk.eu-west-1.rds.amazonaws.com" \
+#     --fields-terminated-by=',' mydb hero_attribute.part_*

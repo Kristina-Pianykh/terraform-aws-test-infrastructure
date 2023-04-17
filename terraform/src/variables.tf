@@ -116,3 +116,8 @@ variable "db_table_name" {
   type    = string
   default = "hero_attribute"
 }
+
+variable "db_name" {
+  type    = string
+  default = "mydb"
+}
