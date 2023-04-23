@@ -146,7 +146,13 @@ jobs:
                   file: Dockerfile
                   push: true
                   build-args: |
-                      VERSION=latest
+                      USER=${{ secrets.DB_USERNAME }}
+                      PASSWORD=${{ secrets.DB_PASSWORD }}
+                      DATABASE=mydb
+                      HOST=my-sql-demo-db.cbppkiwouxgk.eu-west-1.rds.amazonaws.com
+                      PORT=3306
+                      FILE=hero_attribute.csv
+                      TABLE=hero_attribute
                   tags: |
                       ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPO_NAME }}:${{ env.CI_ACTION_REF_NAME_SLUG }}.${{ env.CI_SHA_SHORT }}
                       ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPO_NAME }}:latest
