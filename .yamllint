@@ -28,6 +28,8 @@ rules:
     key-duplicates: enable
     key-ordering: disable
     line-length:
+        ignore: |
+            .github/workflows/tf-deploy.yml
         level: warning
         max: 140
     new-line-at-end-of-file: enable

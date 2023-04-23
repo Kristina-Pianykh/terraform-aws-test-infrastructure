@@ -11,13 +11,8 @@ variable "region" {
 
 }
 
-# variable "instance_count" {
-#   type    = number
-#   default = 3
-# }
-
-# variable "instance_type" {
-#   description = "Instance Type for the EC2 Instance"
+# variable "data_import_instance_type" {
+#   description = "Instance Type for the EC2 Instance to load initial data into the database."
 #   type        = string
 #   default     = "t2.micro"
 # }
@@ -105,16 +100,6 @@ variable "admin_group_name" {
   description = "Name of the admin group"
   type        = string
   default     = "admin"
-}
-
-variable "local_data_file_name" {
-  type    = string
-  default = "hero_attribute.csv"
-}
-
-variable "db_table_name" {
-  type    = string
-  default = "hero_attribute"
 }
 
 variable "db_name" {

@@ -17,6 +17,8 @@ env:
     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     S3_BUCKET_NAME: simple-test-versioned-bucket
+    ECR_REPO_NAME: db_data_import
+    CI_VERSION: snapshot.${{github.sha}}
 
 jobs:
     pre-commit:
@@ -94,6 +96,35 @@ jobs:
               run: |
                   cd terraform/src &&
                   terraform apply terraform.plan
+
+            # Expose useful environment variables to the action such as env.CI_ACTION_REF_NAME_SLUG and env.CI_SHA_SHORT
+            - uses: FranzDiebold/github-env-vars-action@v2
+
+            - name: Configure AWS credentials
+              uses: aws-actions/configure-aws-credentials@v2   # More information on this action can be found below in the 'AWS Credentials' section
+              with:
+                  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                  aws-region: ${{ env.AWS_DEFAULT_REGION }}
+
+            - name: Login to Amazon ECR
+              id: login-ecr
+              uses: aws-actions/amazon-ecr-login@v1
+
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v2
+              with:
+                  context: .
+                  file: Dockerfile
+                  push: true
+                  build-args: |
+                      VERSION=latest
+                  tags: |
+                      ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPO_NAME }}:${{ env.CI_ACTION_REF_NAME_SLUG }}.${{ env.CI_SHA_SHORT }}
+                      ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPO_NAME }}:latest
+                  labels: repository=${{ github.repository }} gh_job=${{ github.job }}
+                  cache-from: type=local,src=/tmp/.buildx-cache
+                  cache-to: type=local,dest=/tmp/.buildx-cache
 
     s3_sync:
         name: Sync Data in S3
