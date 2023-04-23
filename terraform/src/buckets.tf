@@ -10,9 +10,17 @@ resource "aws_s3_bucket_versioning" "test_versioning" {
   }
 }
 
-resource "aws_s3_bucket_acl" "private_test_versioned_bucket" {
+# resource "aws_s3_bucket_acl" "private_test_versioned_bucket" {
+#   bucket = aws_s3_bucket.test_versioned_bucket.id
+#   acl    = "private"
+# }
+
+resource "aws_s3_bucket_ownership_controls" "private_s3" {
   bucket = aws_s3_bucket.test_versioned_bucket.id
-  acl    = "private"
+
+  rule {
+    object_ownership = "BucketOwnerEnforced"
+  }
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "expire_object_immediately" {
