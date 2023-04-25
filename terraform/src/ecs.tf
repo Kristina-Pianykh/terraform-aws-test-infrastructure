@@ -139,10 +139,10 @@ PATTERN
 }
 
 resource "aws_cloudwatch_event_target" "ecs_service" {
-  target_id = "data_import"
+  target_id = "data_import_task"
   rule      = aws_cloudwatch_event_rule.on_db_launch.name
   arn       = aws_ecs_cluster.data_import.arn
-  role_arn  = aws_iam_role.ecsTaskExecutionRole.arn
+  role_arn  = aws_iam_role.ecs_events.arn # The role that allows CloudWatch to trigger ECS (how is it different from the previous ExecutionRole?)
   ecs_target {
     task_count          = 1
     task_definition_arn = aws_ecs_task_definition.data_import.arn
@@ -155,55 +155,44 @@ resource "aws_cloudwatch_event_target" "ecs_service" {
   }
 }
 
-resource "aws_cloudwatch_log_group" "rds_creation_event_log_group" {
-  name              = "/aws/events/${aws_db_instance.demo_db.db_name}/logs"
-  retention_in_days = 1
-}
+# resource "aws_cloudwatch_log_group" "rds_creation_event_log_group" {
+#   name              = "/aws/events/${aws_db_instance.demo_db.db_name}/logs"
+#   retention_in_days = 1
+# }
 
-data "aws_iam_policy_document" "cloudwatch_event_log_policy" {
+data "aws_iam_policy_document" "assume_role" {
   statement {
     effect = "Allow"
-    actions = [
-      "logs:CreateLogStream"
-    ]
-
-    resources = [
-      "${aws_cloudwatch_log_group.rds_creation_event_log_group.arn}:*"
-    ]
 
     principals {
-      type = "Service"
-      identifiers = [
-        "events.amazonaws.com"
-      ]
-    }
-  }
-  statement {
-    effect = "Allow"
-    actions = [
-      "logs:PutLogEvents"
-    ]
-
-    resources = [
-      "${aws_cloudwatch_log_group.rds_creation_event_log_group.arn}:*:*"
-    ]
-
-    principals {
-      type = "Service"
-      identifiers = [
-        "events.amazonaws.com"
-      ]
+      type        = "Service"
+      identifiers = ["events.amazonaws.com"]
     }
 
-    condition {
-      test     = "ArnEquals"
-      values   = [aws_cloudwatch_event_rule.on_db_launch.arn]
-      variable = "aws:SourceArn"
-    }
+    actions = ["sts:AssumeRole"]
   }
 }
 
-resource "aws_cloudwatch_log_resource_policy" "cloudwatch_event_log_policy" {
-  policy_document = data.aws_iam_policy_document.cloudwatch_event_log_policy.json
-  policy_name     = "cloudwatch_event_log_policy"
+resource "aws_iam_role" "ecs_events" {
+  name               = "ecs_events"
+  assume_role_policy = data.aws_iam_policy_document.assume_role.json
+}
+
+data "aws_iam_policy_document" "ecs_events_run_task_with_any_role" {
+  statement {
+    effect    = "Allow"
+    actions   = ["iam:PassRole"]
+    resources = ["*"]
+  }
+
+  statement {
+    effect    = "Allow"
+    actions   = ["ecs:RunTask"]
+    resources = [replace(aws_ecs_task_definition.data_import.arn, "/:\\d+$/", ":*")]
+  }
+}
+resource "aws_iam_role_policy" "ecs_events_run_task_with_any_role" {
+  name   = "ecs_events_run_task_with_any_role"
+  role   = aws_iam_role.ecs_events.id
+  policy = data.aws_iam_policy_document.ecs_events_run_task_with_any_role.json
 }
