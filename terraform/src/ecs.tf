@@ -46,7 +46,7 @@ resource "aws_ecs_task_definition" "data_import" {
         logConfiguration = {
           logDriver = "awslogs",
           options = {
-            awslogs-group         = "/ecs/fargate-task-definition",
+            awslogs-group         = aws_cloudwatch_log_group.ecs_service_log_group.name,
             awslogs-region        = var.region,
             awslogs-stream-prefix = "ecs"
           },
@@ -103,4 +103,8 @@ resource "aws_ecs_service" "app_service" {
     assign_public_ip = true                                   # Provide the containers with public IPs
     security_groups  = [aws_security_group.public_default.id] # Set up the security group
   }
+}
+
+resource "aws_cloudwatch_log_group" "ecs_service_log_group" {
+  name = "ecs/data-import-service"
 }
