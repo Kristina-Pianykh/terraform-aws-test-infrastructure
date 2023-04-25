@@ -107,3 +107,103 @@ resource "aws_ecs_service" "app_service" {
 resource "aws_cloudwatch_log_group" "ecs_service_log_group" {
   name = "ecs/data-import-service"
 }
+
+resource "aws_cloudwatch_event_rule" "on_db_launch" {
+  name        = "load_data_on_db_launch"
+  description = "Trigger the data import task on ECS when the database is launched"
+
+  event_pattern = <<PATTERN
+{
+  "source": [
+    "aws.rds"
+  ],
+  "detail-type": [
+    "RDS DB Instance Event"
+  ],
+  "detail": {
+    "EventCategories": [
+      "creation"
+    ],
+    "SourceType": [
+      "DB_INSTANCE"
+    ],
+    "SourceArn": [
+      "${aws_db_instance.demo_db.arn}"
+    ],
+    "Message": [
+      "DB instance created"
+    ]
+  }
+}
+PATTERN
+}
+
+resource "aws_cloudwatch_event_target" "ecs_service" {
+  target_id = "data_import"
+  rule      = aws_cloudwatch_event_rule.on_db_launch.name
+  arn       = aws_ecs_cluster.data_import.arn
+  role_arn  = aws_iam_role.ecsTaskExecutionRole.arn
+  ecs_target {
+    task_count          = 1
+    task_definition_arn = aws_ecs_task_definition.data_import.arn
+    launch_type         = "FARGATE"
+    network_configuration {
+      subnets          = [for subnet in aws_subnet.subnet : subnet.id if subnet.availability_zone == "eu-west-1a"]
+      assign_public_ip = true
+      security_groups  = [aws_security_group.public_default.id]
+    }
+  }
+}
+
+resource "aws_cloudwatch_log_group" "rds_creation_event_log_group" {
+  name              = "/aws/events/${aws_db_instance.demo_db.db_name}/logs"
+  retention_in_days = 1
+}
+
+data "aws_iam_policy_document" "cloudwatch_event_log_policy" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogStream"
+    ]
+
+    resources = [
+      "${aws_cloudwatch_log_group.rds_creation_event_log_group.arn}:*"
+    ]
+
+    principals {
+      type = "Service"
+      identifiers = [
+        "events.amazonaws.com"
+      ]
+    }
+  }
+  statement {
+    effect = "Allow"
+    actions = [
+      "logs:PutLogEvents"
+    ]
+
+    resources = [
+      "${aws_cloudwatch_log_group.rds_creation_event_log_group.arn}:*:*"
+    ]
+
+    principals {
+      type = "Service"
+      identifiers = [
+        "events.amazonaws.com"
+      ]
+    }
+
+    condition {
+      test     = "ArnEquals"
+      values   = [aws_cloudwatch_event_rule.rds_creation_event_log_group.arn]
+      variable = "aws:SourceArn"
+    }
+  }
+}
+
+resource "aws_cloudwatch_log_resource_policy" "cloudwatch_event_log_policy" {
+  policy_document = data.aws_iam_policy_document.cloudwatch_event_log_policy.json
+  policy_name     = "cloudwatch_event_log_policy"
+}
