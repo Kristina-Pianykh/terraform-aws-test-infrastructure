@@ -197,7 +197,7 @@ data "aws_iam_policy_document" "cloudwatch_event_log_policy" {
 
     condition {
       test     = "ArnEquals"
-      values   = [aws_cloudwatch_event_rule.rds_creation_event_log_group.arn]
+      values   = [aws_cloudwatch_event_rule.on_db_launch.arn]
       variable = "aws:SourceArn"
     }
   }
