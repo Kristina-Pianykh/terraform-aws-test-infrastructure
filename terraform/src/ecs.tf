@@ -6,6 +6,10 @@ resource "aws_ecr_repository" "data_import_ecr" {
 
 resource "aws_ecs_cluster" "data_import" {
   name = "data-import"
+  setting {
+    name  = "containerInsights"
+    value = "enabled"
+  }
 }
 
 resource "aws_ecs_task_definition" "data_import" {
