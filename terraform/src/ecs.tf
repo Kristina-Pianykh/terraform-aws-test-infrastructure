@@ -1,5 +1,5 @@
 resource "aws_ecr_repository" "data_import_ecr" {
-  name                 = "db_data_import-ecr"
+  name                 = "db-data-import-ecr"
   image_tag_mutability = "MUTABLE"
   force_delete         = true
 }
