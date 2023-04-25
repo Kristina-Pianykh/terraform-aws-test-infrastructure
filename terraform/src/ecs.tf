@@ -59,3 +59,17 @@ resource "aws_iam_role_policy_attachment" "ecsTaskExecutionRole_policy" {
   role       = aws_iam_role.ecsTaskExecutionRole.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
+
+resource "aws_ecs_service" "app_service" {
+  name            = "data-import-service"
+  cluster         = aws_ecs_cluster.data_import.id
+  task_definition = aws_ecs_task_definition.data_import.arn
+  launch_type     = "FARGATE"
+  desired_count   = 1
+
+  network_configuration {
+    subnets = [for subnet in aws_subnet.subnet : subnet.id]
+    # assign_public_ip = true                                        # Provide the containers with public IPs
+    security_groups = [aws_security_group.public_default.id] # Set up the security group
+  }
+}
