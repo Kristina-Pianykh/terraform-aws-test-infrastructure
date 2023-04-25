@@ -1,5 +1,5 @@
 resource "aws_ecr_repository" "data_import_ecr" {
-  name                 = "db_data_import"
+  name                 = "db_data_import-ecr"
   image_tag_mutability = "MUTABLE"
   force_delete         = true
 }
@@ -28,7 +28,7 @@ POLICY
 }
 
 resource "aws_ecs_cluster" "data_import" {
-  name = "data-import"
+  name = "data-import-cluster"
   setting {
     name  = "containerInsights"
     value = "enabled"
@@ -36,25 +36,33 @@ resource "aws_ecs_cluster" "data_import" {
 }
 
 resource "aws_ecs_task_definition" "data_import" {
-  family                   = "data_import"
-  container_definitions    = <<DEFINITION
-  [
-    {
-      "name": "app-first-task",
-      "image": "${aws_ecr_repository.data_import_ecr.repository_url}",
-      "essential": true,
-      "portMappings": [
-        {
-          "containerPort": 80,
-          "hostPort": 80,
-          "protocol": "tcp"
-        }
-      ],
-      "memory": 512,
-      "cpu": 256
-    }
-  ]
-  DEFINITION
+  family = "data_import-task_definition"
+  container_definitions = jsonencode(
+    [
+      {
+        name      = "data-import-task-definition",
+        image     = aws_ecr_repository.data_import_ecr.repository_url,
+        essential = true,
+        logConfiguration = {
+          logDriver = "awslogs",
+          options = {
+            awslogs-group         = "/ecs/fargate-task-definition",
+            awslogs-region        = var.region,
+            awslogs-stream-prefix = "ecs"
+          },
+        },
+        portMappings = [
+          {
+            containerPort = 80,
+            hostPort      = 80,
+            protocol      = "tcp"
+          }
+        ],
+        memory = 512,
+        cpu    = 256
+      }
+    ]
+  )
   requires_compatibilities = ["FARGATE"] # use Fargate as the launch type
   network_mode             = "awsvpc"    # add the AWS VPN network mode as this is required for Fargate
   memory                   = 512         # Specify the memory the container requires
