@@ -96,7 +96,6 @@ resource "aws_ecs_service" "app_service" {
   cluster         = aws_ecs_cluster.data_import.id
   task_definition = aws_ecs_task_definition.data_import.arn
   launch_type     = "FARGATE"
-  desired_count   = 1
 
   network_configuration {
     subnets          = [for subnet in aws_subnet.subnet : subnet.id if subnet.availability_zone == "eu-west-1a"]
