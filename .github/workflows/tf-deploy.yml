@@ -59,37 +59,10 @@ jobs:
                   source .venv/bin/activate
                   SKIP=terraform_tflint pre-commit run --all-files
 
-    tf_fmt_lint:
-        name: Format and Lint Terraform
-        runs-on: ubuntu-latest
-        needs: [pre-commit]
-        if: ${{ github.actor != 'dependabot[bot]' }}
-        steps:
-            - name: Checkout Repo
-              uses: actions/checkout@v3
-
-            - name: Set Cache Plugin Dir
-              uses: actions/cache@v3
-              with:
-                  path: ~/.tflint.d/plugins
-                  key: tflint-${{ hashFiles('.tflint.hcl') }}
-
-            - name: Terraform Setup
-              uses: hashicorp/setup-terraform@v2
-
-            - name: Format Terraform Files
-              id: fmt
-              run: terraform fmt -recursive
-              continue-on-error: true
-
-            - name: Run TFlint in Docker Container
-              run: |
-                  docker run --rm -v $(pwd)/terraform/src:/data -t ghcr.io/terraform-linters/tflint
-
     terraform_apply:
         name: Run Terraform Apply
         runs-on: ubuntu-latest
-        needs: [tf_fmt_lint]
+        needs: [pre-commit]
         if: ${{ github.actor != 'dependabot[bot]' }}
         steps:
             - name: Checkout Repo
