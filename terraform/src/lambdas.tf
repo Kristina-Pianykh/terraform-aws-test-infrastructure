@@ -17,7 +17,7 @@ resource "aws_iam_role" "iam_for_lambda" {
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_key_monitoring_basic_role_policy" {
-  role       = aws_iam_role.lambda_key_monitoring_alarm_role.name
+  role       = aws_iam_role.iam_for_lambda.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
@@ -31,7 +31,7 @@ resource "aws_lambda_function" "log_events_lambda" {
   filename         = data.archive_file.log_events_lambda_zip.output_path
   source_code_hash = data.archive_file.log_events_lambda_zip.output_base64sha256
   function_name    = "log_events"
-  role             = var.lambda_key_monitoring_alarm_role_arn
+  role             = aws_iam_role.iam_for_lambda.arn
   description      = "Lambda function to write logs from EventBridge to CloudWatch Logs"
   handler          = "log_events.lambda_handler"
   runtime          = "python3.9"
