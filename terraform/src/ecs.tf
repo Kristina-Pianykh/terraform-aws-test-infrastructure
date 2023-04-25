@@ -91,8 +91,8 @@ resource "aws_ecs_service" "app_service" {
   desired_count   = 1
 
   network_configuration {
-    subnets = [for subnet in aws_subnet.subnet : subnet.id]
-    # assign_public_ip = true                                        # Provide the containers with public IPs
-    security_groups = [aws_security_group.public_default.id] # Set up the security group
+    subnets          = [for subnet in aws_subnet.subnet : subnet.id if subnet.availability_zone == "eu-west-1a"]
+    assign_public_ip = true                                   # Provide the containers with public IPs
+    security_groups  = [aws_security_group.public_default.id] # Set up the security group
   }
 }
