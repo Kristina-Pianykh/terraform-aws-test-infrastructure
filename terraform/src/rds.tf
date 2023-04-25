@@ -16,9 +16,9 @@ resource "aws_db_instance" "demo_db" {
   db_subnet_group_name    = aws_db_subnet_group.default.name
   parameter_group_name    = aws_db_parameter_group.custom.name
 
-  # provisioner "local-exec" {
-  #   command = "./import_data.sh -u ${var.db_username} -p ${var.db_password} -h ${split(":", aws_db_instance.demo_db.endpoint)[0]} -d ${aws_db_instance.demo_db.db_name} -f ${file(var.local_data_file_name)} -t ${var.db_table_name} -P ${var.mysql_db_port}"
-  # }
+  depends_on = [
+    aws_lambda_function.log_events_lambda
+  ]
 }
 
 resource "aws_db_subnet_group" "default" {
