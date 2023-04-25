@@ -22,8 +22,9 @@ resource "aws_ecs_task_definition" "data_import" {
       "essential": true,
       "portMappings": [
         {
-          "containerPort": 5000,
-          "hostPort": 5000
+          "containerPort": 80,
+          "hostPort": 80,
+          "protocol": "tcp"
         }
       ],
       "memory": 512,
