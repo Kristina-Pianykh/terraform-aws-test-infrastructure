@@ -10,6 +10,7 @@ updates:
       directory: /
       schedule:
           interval: weekly
+          update-types: [version-update:semver-major, version-update:semver-minor]
 
     - package-ecosystem: terraform
       directory: /terraform/src
