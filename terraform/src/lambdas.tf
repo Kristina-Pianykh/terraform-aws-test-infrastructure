@@ -38,7 +38,7 @@ resource "aws_lambda_function" "log_events_lambda" {
   timeout          = 300
 
   depends_on = [
-    aws_cloudwatch_log_group.log_events_lambda
+    aws_cloudwatch_log_group.ecs_service_log_group
   ]
 }
 
