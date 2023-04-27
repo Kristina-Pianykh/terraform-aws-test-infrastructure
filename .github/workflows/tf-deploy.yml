@@ -21,8 +21,8 @@ env:
     CI_VERSION: snapshot.${{github.sha}}
 
 jobs:
-    pre-commit:
-        name: Run pre-commit
+    Deploy:
+        name: Deploy
         runs-on: ubuntu-latest
         if: ${{ github.actor != 'dependabot[bot]' }}
         steps:
@@ -45,8 +45,9 @@ jobs:
                   path: |
                       .venv
                       ~/.cache/pre-commit
+                      ci/cache/docker/python-image
                   key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}pre-commit|${{ env.PY }}|${{
-                      hashFiles('.pre-commit-config.yaml') }}
+                      hashFiles('.pre-commit-config.yaml') }}cache-docker-python
             - name: Install dependencies
               if: steps.cached-dependencies.outputs.cache-hit != 'true'
               run: poetry install --no-interaction --no-root
@@ -60,14 +61,21 @@ jobs:
                   source .venv/bin/activate
                   SKIP=terraform_tflint pre-commit run --all-files
 
-    terraform_apply:
-        name: Run Terraform Apply
-        runs-on: ubuntu-latest
-        needs: [pre-commit]
-        if: ${{ github.actor != 'dependabot[bot]' }}
-        steps:
-            - name: Checkout Repo
-              uses: actions/checkout@v3
+            - name: Create lambda layer
+              run: |
+                  poetry export -f requirements.txt --output requirements.txt --only lambda
+                  mkdir python/lib/python3.9/site-packages
+
+            - name: Pull Docker image for layer zip creation
+              run: |
+                  docker pull public.ecr.aws/sam/build-python3.9:1.81.0 && mkdir -p ci/cache/docker/python-image && docker image save public.ecr.aws/sam/build-python3.9:1.81.0 --output ./ci/cache/docker/python-image/build-python3.9-1.81.0.tar
+
+            - name: Populate dependencies
+              if: steps.cached-dependencies.outputs.cache-hit != 'true'
+              run: |
+                  docker image load --input ./ci/cache/docker/python-image/build-python3.9-1.81.0.tar
+                  docker run -v "$PWD":/var/task "public.ecr.aws/sam/build-python3.9" /bin/sh -c "pip install -r requirements.txt -t python/lib/python3.9/site-packages/; exit"
+                  zip -r terraform/src/mypythonlibs.zip python > /dev/null
 
             - name: Initialize Terraform
               run: |
@@ -137,7 +145,7 @@ jobs:
     s3_sync:
         name: Sync Data in S3
         runs-on: ubuntu-latest
-        needs: [terraform_apply]
+        needs: [Deploy]
         if: ${{ github.actor != 'dependabot[bot]' }}
         steps:
             - name: Checkout Repo
