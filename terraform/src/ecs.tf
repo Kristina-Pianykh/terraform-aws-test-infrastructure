@@ -120,21 +120,12 @@ resource "aws_cloudwatch_event_rule" "on_db_launch" {
     "RDS DB Instance Event"
   ],
   "detail": {
-    "EventCategories": [
-      "creation",
-      "availability",
-      "notification"
-    ],
+    "EventID": ["RDS-EVENT-0088", "RDS-EVENT-0005"],
     "SourceType": [
       "DB_INSTANCE"
     ],
     "SourceArn": [
       "${aws_db_instance.demo_db.arn}"
-    ],
-    "Message": [
-      "DB instance created",
-      "DB instance restarted",
-      "DB instance started"
     ]
   }
 }
