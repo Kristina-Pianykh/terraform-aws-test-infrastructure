@@ -7,24 +7,22 @@ resource "aws_ecr_repository" "data_import_ecr" {
 resource "aws_ecr_lifecycle_policy" "ecr_lifecycle_policies_tagged" {
   repository = aws_ecr_repository.data_import_ecr.name
 
-  policy = <<POLICY
-{
-    "rules": [
-        {
-            "rulePriority": 1,
-            "description": "Keep last image",
-            "selection": {
-                "tagStatus": "any",
-                "countType": "imageCountMoreThan",
-                "countNumber": 1
-            },
-            "action": {
-                "type": "expire"
-            }
+  policy = jsonencode({
+    rules = [
+      {
+        rulePriority = 1,
+        description  = "Keep last image",
+        selection = {
+          tagStatus   = "any",
+          countType   = "imageCountMoreThan",
+          countNumber = 1
+        },
+        action = {
+          type = "expire"
         }
+      }
     ]
-}
-POLICY
+  })
 }
 
 resource "aws_ecs_cluster" "data_import" {
