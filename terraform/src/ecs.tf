@@ -133,12 +133,6 @@ resource "aws_cloudwatch_event_rule" "on_db_launch" {
     "SourceArn": [
       "${aws_db_instance.demo_db.arn}"
     ],
-    "EventId": [
-      "RDS-EVENT-0006",
-      "RDS-EVENT-0005",
-      "RDS-EVENT-0088"
-
-    ],
     "Message": [
       "DB instance created",
       "DB instance restarted",
