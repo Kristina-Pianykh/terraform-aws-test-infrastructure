@@ -105,7 +105,8 @@ resource "aws_ecs_service" "app_service" {
 }
 
 resource "aws_cloudwatch_log_group" "ecs_service_log_group" {
-  name = "ecs/data-import-service"
+  name              = "ecs/data-import-service"
+  retention_in_days = 1
 }
 
 resource "aws_cloudwatch_event_rule" "on_db_launch" {
