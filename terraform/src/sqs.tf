@@ -3,6 +3,7 @@ resource "aws_sqs_queue" "db_buffer" {
   fifo_queue                  = true
   content_based_deduplication = false
   message_retention_seconds   = 86400 # 1 day
+  visibility_timeout_seconds  = aws_lambda_function.sqs_polling_lambda.timeout * 6
 }
 
 data "aws_iam_policy_document" "sqs_access_policy" {

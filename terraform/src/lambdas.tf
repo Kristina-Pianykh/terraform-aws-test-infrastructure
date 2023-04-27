@@ -24,16 +24,16 @@ resource "aws_iam_role_policy_attachment" "lambda_key_monitoring_basic_role_poli
 data "archive_file" "log_events_lambda_zip" {
   type        = "zip"
   source_dir  = "${path.module}/log_events"
-  output_path = "${path.module}/log_events.zip"
+  output_path = "${path.module}/${var.data_import_lambda_name}.zip"
 }
 
 resource "aws_lambda_function" "log_events_lambda" {
   filename         = data.archive_file.log_events_lambda_zip.output_path
   source_code_hash = data.archive_file.log_events_lambda_zip.output_base64sha256
-  function_name    = "log_events"
+  function_name    = var.data_import_lambda_name
   role             = aws_iam_role.iam_for_lambda.arn
   description      = "Lambda function to write logs from EventBridge to CloudWatch Logs"
-  handler          = "log_events.lambda_handler"
+  handler          = "${var.data_import_lambda_name}.lambda_handler"
   runtime          = "python3.9"
   timeout          = 300
 
@@ -43,6 +43,39 @@ resource "aws_lambda_function" "log_events_lambda" {
 }
 
 resource "aws_cloudwatch_log_group" "log_events_lambda" {
-  name              = "/aws/lambda/log_events"
+  name              = "/aws/lambda/${var.data_import_lambda_name}"
+  retention_in_days = 1
+}
+
+data "archive_file" "sqs_polling_lambda_zip" {
+  type        = "zip"
+  source_dir  = "${path.module}/log_events"
+  output_path = "${path.module}/log_events.zip"
+}
+
+resource "aws_lambda_function" "sqs_polling_lambda" {
+  filename         = data.archive_file.sqs_polling_lambda_zip.output_path
+  source_code_hash = data.archive_file.sqs_polling_lambda_zip.output_base64sha256
+  function_name    = var.sqs_polling_lambda_name
+  role             = aws_iam_role.iam_for_lambda.arn
+  description      = "Lambda function to poll SQS queue, write logs to CloudWatch Logs and insert data into RDS"
+  handler          = "${var.sqs_polling_lambda_name}.lambda_handler"
+  runtime          = "python3.9"
+  timeout          = 180 # 3 minutes
+
+  depends_on = [
+    aws_cloudwatch_log_group.sqs_polling_lambda
+  ]
+}
+
+resource "aws_lambda_layer_version" "sqs_polling_lambda_layer" {
+  filename   = "lambda_layer_payload.zip"
+  layer_name = "${var.sqs_polling_lambda_name}_layer"
+
+  compatible_runtimes = ["python3.9"]
+}
+
+resource "aws_cloudwatch_log_group" "sqs_polling_lambda" {
+  name              = "/aws/lambda/${var.sqs_polling_lambda_name}"
   retention_in_days = 1
 }

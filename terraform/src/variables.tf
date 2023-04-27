@@ -106,3 +106,13 @@ variable "db_name" {
   type    = string
   default = "mydb"
 }
+
+variable "data_import_lambda_name" {
+  type    = string
+  default = "data-import-lambda"
+}
+
+variable "sqs_polling_lambda_name" {
+  type    = string
+  default = "sqs-polling-lambda"
+}
