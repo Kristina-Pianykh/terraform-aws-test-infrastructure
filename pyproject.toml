@@ -15,7 +15,7 @@ pymysql = "^1.0.3"
 
 
 [tool.poetry.group.lambda.dependencies]
-mysql-connector-python = "^8.0.33"
+mysql-connector-python = "^8.1.0"
 
 [build-system]
 requires = ["poetry-core"]
