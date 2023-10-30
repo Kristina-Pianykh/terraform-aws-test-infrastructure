@@ -20,6 +20,7 @@ env:
     ECR_REPO_NAME: db-data-import-ecr
     CI_VERSION: snapshot.${{github.sha}}
 
+
 jobs:
     Deploy:
         name: Deploy
@@ -61,40 +62,8 @@ jobs:
                   source .venv/bin/activate
                   SKIP=terraform_tflint pre-commit run --all-files
 
-            - name: Create lambda layer
-              run: |
-                  poetry export -f requirements.txt --output requirements.txt --only lambda
-                  mkdir python/lib/python3.9/site-packages
-
-            - name: Pull Docker image for layer zip creation
-              run: |
-                  docker pull public.ecr.aws/sam/build-python3.9:1.81.0 && mkdir -p ci/cache/docker/python-image && docker image save public.ecr.aws/sam/build-python3.9:1.81.0 --output ./ci/cache/docker/python-image/build-python3.9-1.81.0.tar
-
-            - name: Populate dependencies
-              if: steps.cached-dependencies.outputs.cache-hit != 'true'
-              run: |
-                  docker image load --input ./ci/cache/docker/python-image/build-python3.9-1.81.0.tar
-                  docker run -v "$PWD":/var/task "public.ecr.aws/sam/build-python3.9" /bin/sh -c "pip install -r requirements.txt -t python/lib/python3.9/site-packages/; exit"
-                  zip -r terraform/src/mypythonlibs.zip python > /dev/null
-
-            - name: Initialize Terraform
-              run: |
-                  cd terraform/src
-                  terraform init -backend-config=backend.hcl
-
-            - name: Terraform Plan
-              run: |
-                  cd terraform/src
-                  terraform plan \
-                  -var 'db_username=${{ secrets.DB_USERNAME }}' \
-                  -var 'db_password=${{ secrets.DB_PASSWORD }}' \
-                  -var 'my_ip_addresses=${{ secrets.IP_ADDRESSES }}' \
-                  -out=terraform.plan
-
-            - name: Terraform Apply
-              run: |
-                  cd terraform/src &&
-                  terraform apply terraform.plan
+            - name: Deploy Terraform
+              run: ./terraform_deploy.sh 0
 
             # Expose useful environment variables to the action such as env.CI_ACTION_REF_NAME_SLUG and env.CI_SHA_SHORT
             - uses: FranzDiebold/github-env-vars-action@v2
