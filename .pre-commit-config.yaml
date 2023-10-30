@@ -6,7 +6,7 @@ default_language_version:
 exclude: (.venv/*)
 repos:
     - repo: https://github.com/pre-commit/pre-commit-hooks
-      rev: v4.4.0
+      rev: v4.5.0
       hooks:
           - id: end-of-file-fixer
           - id: trailing-whitespace
@@ -15,23 +15,23 @@ repos:
           - id: detect-private-key
           - id: check-json
     - repo: https://github.com/jumanjihouse/pre-commit-hook-yamlfmt
-      rev: 0.2.2
+      rev: 0.2.3
       hooks:
           - id: yamlfmt
     - repo: https://github.com/adrienverge/yamllint
-      rev: v1.29.0
+      rev: v1.32.0
       hooks:
           - id: yamllint
             name: Check yaml files with yamllint
             entry: yamllint --strict .
             types: [yaml]
     - repo: https://github.com/antonbabenko/pre-commit-terraform
-      rev: v1.77.0
+      rev: v1.83.5
       hooks:
           - id: terraform_fmt
           - id: terraform_tflint
     - repo: https://github.com/sirosen/check-jsonschema
-      rev: 0.21.0
+      rev: 0.27.0
       hooks:
           - id: check-dependabot
           - id: check-github-workflows
