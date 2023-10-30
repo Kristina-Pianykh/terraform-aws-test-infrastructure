@@ -12,7 +12,7 @@ env:
 
 jobs:
     terraform_destroy:
-        name: Run Terraform Destroy
+        name: Terraform Destroy
         runs-on: ubuntu-latest
         steps:
             - name: Set up Python
