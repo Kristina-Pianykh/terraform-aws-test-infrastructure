@@ -134,13 +134,13 @@ EOF
 
 resource "aws_cloudwatch_event_target" "trigger_lambda_logger" {
   rule = aws_cloudwatch_event_rule.on_db_launch.name
-  arn  = aws_lambda_function.log_events_lambda.arn
+  arn  = aws_lambda_function.sqs_polling_lambda.arn
 }
 
 resource "aws_lambda_permission" "allow_cloudwatch" {
   statement_id  = "AllowExecutionFromCloudWatch"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.log_events_lambda.function_name
+  function_name = aws_lambda_function.sqs_polling_lambda.function_name
   principal     = "events.amazonaws.com"
   source_arn    = aws_cloudwatch_event_rule.on_db_launch.arn
 }

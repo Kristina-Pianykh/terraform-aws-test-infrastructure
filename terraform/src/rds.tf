@@ -17,7 +17,7 @@ resource "aws_db_instance" "demo_db" {
   parameter_group_name    = aws_db_parameter_group.custom.name
 
   depends_on = [
-    aws_lambda_function.log_events_lambda
+    aws_lambda_function.sqs_polling_lambda
   ]
 }
 
