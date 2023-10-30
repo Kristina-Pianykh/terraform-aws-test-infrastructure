@@ -25,12 +25,12 @@ resource "aws_autoscaling_group" "demo-asg" {
   min_size             = 1
   force_delete         = true
   launch_configuration = aws_launch_configuration.demo-config.name
-  target_group_arns    = [aws_lb_target_group.test-target-group.arn]
+  target_group_arns    = [aws_lb_target_group.app_fronted_target_group.arn]
 }
 
 resource "aws_autoscaling_attachment" "test-attachment" {
   autoscaling_group_name = aws_autoscaling_group.demo-asg.id
-  lb_target_group_arn    = aws_lb_target_group.test-target-group.arn
+  lb_target_group_arn    = aws_lb_target_group.app_fronted_target_group.arn
 }
 
 resource "aws_autoscaling_policy" "cpu-asg-policy" {
