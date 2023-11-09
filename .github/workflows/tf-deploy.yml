@@ -19,6 +19,9 @@ env:
     S3_BUCKET_NAME: simple-test-versioned-bucket
     ECR_REPO_NAME: db-data-import-ecr
     CI_VERSION: snapshot.${{github.sha}}
+    PYTHON_VERSION: '3.10'
+    TFLINT_VERSION: v0.48.0
+    HOOKS_TO_SKIP: terraform_tflint
 
 
 jobs:
@@ -29,38 +32,15 @@ jobs:
         steps:
             - name: Checkout Repo
               uses: actions/checkout@v3
-            - uses: actions/setup-python@v4
-              id: setup-python
               with:
-                  python-version: '3.10'
-            - name: Install Poetry
-              uses: snok/install-poetry@v1
+                  fetch-depth: 0
+
+            - id: pre-commit
+              uses: Kristina-Pianykh/poetry-pre-commit-cache@v1.4
               with:
-                  virtualenvs-create: true
-                  virtualenvs-in-project: true
-                  installer-parallel: true
-            - name: Load cached venv
-              id: cached-dependencies
-              uses: actions/cache@v3
-              with:
-                  path: |
-                      .venv
-                      ~/.cache/pre-commit
-                      ci/cache/docker/python-image
-                  key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}pre-commit|${{ env.PY }}|${{
-                      hashFiles('.pre-commit-config.yaml') }}cache-docker-python
-            - name: Install dependencies
-              if: steps.cached-dependencies.outputs.cache-hit != 'true'
-              run: poetry install --no-interaction --no-root
-            - name: Install pre-commit hooks
-              if: steps.cached-dependencies.outputs.cache-hit != 'true'
-              run: |
-                  source .venv/bin/activate
-                  pre-commit install-hooks
-            - name: Run pre-commit
-              run: |
-                  source .venv/bin/activate
-                  SKIP=terraform_tflint pre-commit run --all-files
+                  python-version: ${{ env.PYTHON_VERSION }}
+                  tflint-version: ${{ env.TFLINT_VERSION }}
+                  hooks-to-skip: ${{ env.HOOKS_TO_SKIP }}
 
             - name: Deploy Terraform
               run: ./terraform_deploy.sh 0
