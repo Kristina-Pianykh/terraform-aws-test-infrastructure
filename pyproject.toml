@@ -11,7 +11,7 @@ python = "^3.9"
 pre-commit = "^3.2.3"
 s3cmd = "^2.3.0"
 boto3 = "^1.26.134"
-pymysql = "^1.0.3"
+pymysql = "^1.1.1"
 
 
 [tool.poetry.group.lambda.dependencies]
